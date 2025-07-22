@@ -33,9 +33,45 @@ def sitemap():
 def handle_hello():
     # This is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
-    response_body = {"hello": "world",
-                     "family": members}
-    return jsonify(response_body), 200
+
+    return jsonify(members), 200
+
+@app.route('/members/<int:id>', methods=['GET'])
+def get_single_member(id):
+    # This is how you can use the Family datastructure by calling its methods
+    member = jackson_family.get_member(id)
+
+    return jsonify({
+        "id": member["id"],
+        "first_name": member["first_name"],
+        "age": member["age"],
+        "lucky_numbers": member["lucky_numbers"]
+    }), 200
+
+@app.route('/members/<int:id>', methods=['DELETE'])
+def delete_single_member(id):
+
+    deleted = jackson_family.delete_member(id)
+
+    if deleted:
+        return jsonify({"done": True}), 200
+    else:
+        return jsonify({"error": "Member not found"}), 400
+
+
+@app.route('/members', methods=['POST'])
+def create_member():
+
+    # agregar el miembro a la familia
+    # agregar un nuevo elemento a la familia
+    # leer los datos del body
+    body = request.json
+    # utilizar el metodo add_member
+    member = {'first_name':body['first_name'] ,'age':body['age'], 'lucky_numbers':body['lucky_numbers']}
+    new_member = jackson_family.add_member(member)
+
+    # This is how you can use the Family datastructure by calling its methods
+    return jsonify(new_member), 200
 
 
 
